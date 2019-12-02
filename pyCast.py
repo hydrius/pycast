@@ -25,16 +25,13 @@ dir = "/home/aquitard/Projects/pycast/test"
 attrKeys = { 'kMDItemAlbum': 'Album'}
 
 def getMeta( fileName ):
-    print(fileName)
     audio = MP3(fileName)
     fileDets = {}
     if os.path.exists( fileName ):
         mp3 = MP3File(fileName)
         tags = mp3.get_tags()["ID3TagV1"]
-        print(tags)
-
+    
         for value in attrKeys.values():
-            print(tags[value.lower()])
             fileDets[value] = tags[value.lower()]
 
         fileDets["Title"] = tags["song"] 

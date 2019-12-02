@@ -1,5 +1,12 @@
 # pycast
 
+#
+# Special thanks to Wintersmith for putting in the building blocks.
+# This work originally worked on OSX but not linux.
+# I have updated the program to work on python3 and linux. 
+
+
+
 Welcome to pyCast, a simple Python script to generate XML files for serving podcasts.
 
 To generate files:
