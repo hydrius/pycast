@@ -1,31 +1,61 @@
 #!/usr/bin/env python
 
+
+#
+#
+# Modfied version of but for
+#
+#
+
+
+
 from __future__ import print_function
 import os, sys, getopt, mimetypes, datetime, urllib
 import  xml.etree.cElementTree as ET
+import urllib.parse
 
-from Foundation import *
+from mp3_tagger import MP3File, VERSION_1, VERSION_2, VERSION_BOTH
+from mutagen.mp3 import MP3
 
 
-attrKeys = { 'kMDItemAlbum': 'Album', 'kMDItemDurationSeconds': 'Duration', 'kMDItemDisplayName': 'Title', 'kMDItemContentCreationDate': 'PubDate', 
-            'kMDItemLogicalSize': 'Size', 'kMDItemComment': 'Summary', 'kMDItemAuthors': 'Authors' }
+
+#replace with ladysue when serving 
+dir = "/home/aquitard/Projects/pycast/test"
+
+attrKeys = { 'kMDItemAlbum': 'Album'}
 
 def getMeta( fileName ):
+    print(fileName)
+    audio = MP3(fileName)
     fileDets = {}
     if os.path.exists( fileName ):
-        mdRef = NSURL.fileURLWithPath_( fileName )
-        mdItem = NSMetadataItem.alloc().initWithURL_( mdRef )
-        for indivKey in attrKeys.keys():
-            fileDets[ attrKeys[ indivKey ] ] = mdItem.valueForAttribute_( indivKey )
-            
+        mp3 = MP3File(fileName)
+        tags = mp3.get_tags()["ID3TagV1"]
+        print(tags)
+
+        for value in attrKeys.values():
+            print(tags[value.lower()])
+            fileDets[value] = tags[value.lower()]
+
+        fileDets["Title"] = tags["song"] 
+        fileDets["Summary"] = tags["song"] 
+        fileDets["Summary"] = tags["song"] 
+        fileDets["Authors"] = tags["artist"] 
+        fileDets["Duration"] = audio.info.length
+        fileDets["Size"] = audio.info.length
+        fileDets["PubDate"] = None
+
+
+
     return fileDets
 
 def genFeed( srcDir ):
-    for fileFound in os.listdir( srcDir ):
+    for fileFound in sorted(os.listdir( srcDir )):
         if fileFound.startswith( '.' ):
             continue
         yield fileFound
 
+import urllib.parse
 def main( argv = None ):
     if argv is None:
         argv = sys.argv
@@ -41,6 +71,7 @@ def main( argv = None ):
 
     if dirBase is None:
         print( 'Base Dir Not Specified!' )
+        dirBase = dir
         return 1
                     
     for srcDir in os.listdir( dirBase ):
@@ -61,7 +92,7 @@ def main( argv = None ):
         fullPath = os.path.join( dirBase, srcDir )
         for fileName in genFeed( fullPath ):
             relPath = os.path.join( srcDir, fileName ) 
-            fullURL = os.path.join( webBase, urllib.quote( relPath ) )
+            fullURL = os.path.join( webBase, urllib.parse.quote( relPath ) )
             metaInfo = getMeta( os.path.join( fullPath, fileName ) )
             if metaInfo[ 'Title' ] == '':
                 metaInfo[ 'Title' ] = srcDir
@@ -117,3 +148,4 @@ if __name__ == '__main__':
     
     
     
+import urllib.parse
