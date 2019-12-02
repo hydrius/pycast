@@ -5,7 +5,7 @@
 #
 # Modfied version of but for
 #
-#
+#       
 
 
 
@@ -33,15 +33,22 @@ def getMeta( fileName ):
     
         for value in attrKeys.values():
             fileDets[value] = tags[value.lower()]
-
-        fileDets["Title"] = tags["song"] 
-        fileDets["Summary"] = tags["song"] 
-        fileDets["Summary"] = tags["song"] 
-        fileDets["Authors"] = tags["artist"] 
-        fileDets["Duration"] = audio.info.length
-        fileDets["Size"] = audio.info.length
-        fileDets["PubDate"] = None
-
+        try:
+            fileDets["Title"] = tags["song"] 
+            fileDets["Summary"] = tags["song"] 
+            fileDets["Summary"] = tags["song"] 
+            fileDets["Authors"] = tags["artist"] 
+            fileDets["Duration"] = audio.info.length
+            fileDets["Size"] = audio.info.length
+            fileDets["PubDate"] = None
+        except:
+            fileDets["Title"] = ""
+            fileDets["Summary"] = "" 
+            fileDets["Summary"] = "" 
+            fileDets["Authors"] = "" 
+            fileDets["Duration"] = None
+            fileDets["Size"] = None
+            fileDets["PubDate"] = None
 
 
     return fileDets
