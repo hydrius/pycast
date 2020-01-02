@@ -26,14 +26,17 @@ attrKeys = { 'kMDItemAlbum': 'Album'}
 
 def getMeta( fileName ):
     audio = MP3(fileName)
+    print(fileName)
     fileDets = {}
     if os.path.exists( fileName ):
         mp3 = MP3File(fileName)
-        tags = mp3.get_tags()["ID3TagV1"]
-    
-        for value in attrKeys.values():
-            fileDets[value] = tags[value.lower()]
         try:
+            tags = mp3.get_tags()["ID3TagV2"]
+    
+            for value in attrKeys.values():
+                fileDets[value] = tags[value.lower()]
+                print(tags[value.lower()])
+
             fileDets["Title"] = tags["song"] 
             fileDets["Summary"] = tags["song"] 
             fileDets["Summary"] = tags["song"] 
@@ -42,11 +45,12 @@ def getMeta( fileName ):
             fileDets["Size"] = audio.info.length
             fileDets["PubDate"] = None
         except:
+            fileDets["Album"] = "The Dragon Reborn"
             fileDets["Title"] = ""
             fileDets["Summary"] = "" 
             fileDets["Summary"] = "" 
-            fileDets["Authors"] = "" 
-            fileDets["Duration"] = None
+            fileDets["Authors"] = "Wheel of Time" 
+            fileDets["Duration"] = audio.info.length
             fileDets["Size"] = None
             fileDets["PubDate"] = None
 
